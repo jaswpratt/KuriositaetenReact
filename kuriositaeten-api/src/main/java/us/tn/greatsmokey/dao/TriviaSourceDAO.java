@@ -230,36 +230,68 @@ public class TriviaSourceDAO {
       */
     private String callOtdbUrl(String otdbUrl) {
         System.out.println("Entering callOtdbUrl()");
-        StringBuilder sb = new StringBuilder();
 
-        try {
-            URL url = URI.create(otdbUrl).toURL();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setReadTimeout(60 * 1000);
-            connection.setConnectTimeout(15 * 1000);
-            connection.setRequestMethod("GET");
+        final int maxRetries = 3;
+        final long retryDelayMillis = 6000; // OpenTDB's rate limit window is ~5s; pad slightly
 
-            int status = connection.getResponseCode();
-            if (status != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("OpenTDB returned HTTP status " + status);
-            }
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            StringBuilder sb = new StringBuilder();
 
-            try (InputStreamReader in = new InputStreamReader(
-                    connection.getInputStream(), StandardCharsets.UTF_8);
-                 BufferedReader bufferedReader = new BufferedReader(in)) {
+            try {
+                URL url = URI.create(otdbUrl).toURL();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setReadTimeout(60 * 1000);
+                connection.setConnectTimeout(15 * 1000);
+                connection.setRequestMethod("GET");
 
-                int cp;
-                while ((cp = bufferedReader.read()) != -1) {
-                    sb.append((char) cp);
+                int status = connection.getResponseCode();
+
+                if (status == 429) {
+                    connection.disconnect();
+                    if (attempt < maxRetries) {
+                        System.out.println("OpenTDB rate limited (429). Attempt "
+                                + attempt + "/" + maxRetries + " — retrying in "
+                                + retryDelayMillis + "ms");
+                        try {
+                            Thread.sleep(retryDelayMillis);
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException("Interrupted while waiting to retry OpenTDB call", ie);
+                        }
+                        continue; // retry the loop
+                    } else {
+                        throw new RuntimeException(
+                                "OpenTDB rate limit exceeded after " + maxRetries + " attempts");
+                    }
                 }
-            } finally {
-                connection.disconnect();
+
+                if (status != HttpURLConnection.HTTP_OK) {
+                    throw new RuntimeException("OpenTDB returned HTTP status " + status);
+                }
+
+                try (InputStreamReader in = new InputStreamReader(
+                        connection.getInputStream(), StandardCharsets.UTF_8);
+                     BufferedReader bufferedReader = new BufferedReader(in)) {
+
+                    int cp;
+                    while ((cp = bufferedReader.read()) != -1) {
+                        sb.append((char) cp);
+                    }
+                } finally {
+                    connection.disconnect();
+                }
+
+                System.out.println("Exiting callOtdbUrl()");
+                return sb.toString();
+
+            } catch (RuntimeException re) {
+                throw re; // already wrapped/intentional (429-exhausted or non-200 status)
+            } catch (Exception e) {
+                throw new RuntimeException("Exception while calling URL: " + otdbUrl, e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while calling URL: " + otdbUrl, e);
         }
 
-        System.out.println("Exiting callOtdbUrl()");
-        return sb.toString();
+        // Unreachable, but required for compilation
+        throw new RuntimeException("Exhausted retries calling OpenTDB URL: " + otdbUrl);
     }
 }

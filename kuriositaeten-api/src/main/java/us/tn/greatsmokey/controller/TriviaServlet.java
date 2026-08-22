@@ -60,7 +60,7 @@ public class TriviaServlet extends HttpServlet {
         params.setType(request.getParameter("type"));
 
         List<TriviaQuestion> questions = dao.getTriviaQuestions(params);
-
+System.out.println("questions LIST " + questions.size());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 

@@ -9,7 +9,7 @@ function QuizQuestion({ q, index, onAnswered }) {
   const [selected, setSelected] = useState(null)
 
   function handleSelect(option) {
-    if (selected) return // already answered, lock it in
+    if (selected) return
     setSelected(option)
     onAnswered(option === q.correctAnswer)
   }
