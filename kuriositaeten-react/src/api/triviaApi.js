@@ -1,4 +1,4 @@
-const BASE_URL = '/api'
+const BASE_URL = import.meta.env.DEV ? '/api' : import.meta.env.BASE_URL
 export async function fetchCategories() {
   const res = await fetch(`${BASE_URL}/CategoriesServlet`)
   if (!res.ok) throw new Error(`Failed to fetch categories: ${res.status}`)
