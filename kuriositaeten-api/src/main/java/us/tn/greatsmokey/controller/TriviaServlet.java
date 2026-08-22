@@ -50,8 +50,7 @@ public class TriviaServlet extends HttpServlet {
       * @throws IOException      if an I/O error occurs during JSON serialization
       */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         TriviaParams params = new TriviaParams();
         params.setAmount(request.getParameter("count"));
@@ -60,7 +59,7 @@ public class TriviaServlet extends HttpServlet {
         params.setType(request.getParameter("type"));
 
         List<TriviaQuestion> questions = dao.getTriviaQuestions(params);
-System.out.println("questions LIST " + questions.size());
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
