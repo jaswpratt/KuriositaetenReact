@@ -4,8 +4,8 @@ A trivia quiz web app built with a **Java/Maven servlet backend** and a **React 
 
 ## Live demo
 
-- **React:** `http://srv1839678.hstgr.cloud:8080/kuriositaeten-react/`
-- **Vue:** `http://srv1839678.hstgr.cloud:8080/kuriositaeten-vue/`
+- **React:** `http://virginiabrightleaf.tech:8080/kuriositaeten-react/`
+- **Vue:** `http://virginiabrightleaf.tech:8080/kuriositaeten-vue/`
 
 ## Features
 
