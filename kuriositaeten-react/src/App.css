@@ -182,3 +182,33 @@
     border-right-color: var(--border);
   }
 }
+
+.quiz-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.start-quiz-btn {
+  background-color: #4a7c59;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.start-quiz-btn:hover {
+  background-color: #3a6349;
+}

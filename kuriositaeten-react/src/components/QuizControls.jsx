@@ -21,8 +21,8 @@ function QuizControls({ category, onStart }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
+    <form onSubmit={handleSubmit} className="quiz-controls">
+      <label className="control-row">
         Number of questions:
         <input
           type="number"
@@ -33,7 +33,7 @@ function QuizControls({ category, onStart }) {
         />
       </label>
 
-      <label>
+      <label className="control-row">
         Difficulty:
         <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
           {DIFFICULTIES.map((d) => (
@@ -42,7 +42,7 @@ function QuizControls({ category, onStart }) {
         </select>
       </label>
 
-      <label>
+      <label className="control-row">
         Type:
         <select value={type} onChange={(e) => setType(e.target.value)}>
           {TYPES.map((t) => (
@@ -51,7 +51,7 @@ function QuizControls({ category, onStart }) {
         </select>
       </label>
 
-      <button type="submit">Start Quiz</button>
+      <button type="submit" className="start-quiz-btn">Start Quiz</button>
     </form>
   )
 }
