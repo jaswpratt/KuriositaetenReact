@@ -7,6 +7,10 @@ target/
 .project
 .classpath
 .factorypath
+kuriositaeten-api/src/main/webapp/assets/
+kuriositaeten-api/src/main/webapp/index.html
+kuriositaeten-api/src/main/webapp/favicon.svg
+kuriositaeten-api/src/main/webapp/icons.svg
 
 ### Node / Vite (kuriositaeten-react) ###
 node_modules/
